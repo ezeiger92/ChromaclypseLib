@@ -1,0 +1,7 @@
+name: ChromaLib
+main: com.chromaclypse.lib.ChromaLib
+version: ${project.version}
+description: Plugin library
+author: ezeiger92
+commands: {}
+permissions: {}
