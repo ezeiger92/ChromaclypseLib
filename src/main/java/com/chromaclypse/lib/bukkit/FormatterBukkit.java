@@ -10,8 +10,17 @@ import org.bukkit.ChatColor;
 import com.chromaclypse.api.messages.Formatter;
 
 public class FormatterBukkit implements Formatter {
-	public final static char dummyChar = '&';
-	public final static char colorChar = ChatColor.COLOR_CHAR;
+	private final static char colorChar = ChatColor.COLOR_CHAR;
+
+	@Override
+	public boolean isColor(String input, int index) {
+		try {
+			return input.charAt(index) == colorChar;
+		}
+		catch(IndexOutOfBoundsException e) {
+			return false;
+		}
+	}
 	
 	@Override
 	public String colorize(String input) {

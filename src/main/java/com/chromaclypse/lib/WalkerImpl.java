@@ -107,6 +107,10 @@ public class WalkerImpl implements Walker {
 		if(in instanceof ConfigurationSection) {
 			return ((ConfigurationSection)in).getValues(false);
 		}
+		
+		if(in == null)
+			return Defaults.EmptyMap();
+		
 		return (Map<String,Object>)in;
 	}
 	

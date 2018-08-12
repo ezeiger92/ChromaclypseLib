@@ -16,19 +16,23 @@ import com.chromaclypse.api.config.EmptySection;
 import com.chromaclypse.api.config.Walker;
 import com.chromaclypse.api.menu.Menu;
 import com.chromaclypse.api.messages.Formatter;
+import com.chromaclypse.lib.bukkit.ChromaBukkit;
 import com.chromaclypse.lib.bukkit.FormatterBukkit;
 
 public class ChromaLib extends JavaPlugin implements Listener {
 
 	static {
-		FactoryImpl factory = new FactoryImpl();
-		factory.register(Logger.class, Bukkit.getLogger());
-		factory.register(EmptySection.class, new EmptySectionImpl());
+		ChromaBukkit chroma = new ChromaBukkit();
 		
-		factory.register(Walker.class, WalkerImpl.class);
-		factory.register(Formatter.class, FormatterBukkit.class);
+		chroma.factory().register(Logger.class, Bukkit.getLogger());
+		chroma.factory().register(EmptySection.class, new EmptySectionImpl());
 		
-		Chroma.setFactory(factory);
+		chroma.factory().register(Walker.class, WalkerImpl.class);
+		chroma.factory().register(Formatter.class, FormatterBukkit.class);
+	}
+	
+	public ChromaLib() {
+		((ChromaBukkit) Chroma.get()).setPlugin(this);
 	}
 	
 	@Override

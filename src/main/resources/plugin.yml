@@ -3,5 +3,6 @@ main: com.chromaclypse.lib.ChromaLib
 version: ${project.version}
 description: Plugin library
 author: ezeiger92
+api-version: 1.13
 commands: {}
 permissions: {}
