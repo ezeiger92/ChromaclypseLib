@@ -12,7 +12,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.chromaclypse.api.Chroma;
-import com.chromaclypse.api.config.EmptySection;
 import com.chromaclypse.api.config.Walker;
 import com.chromaclypse.api.menu.Menu;
 import com.chromaclypse.api.messages.Formatter;
@@ -25,8 +24,6 @@ public class ChromaLib extends JavaPlugin implements Listener {
 		ChromaBukkit chroma = new ChromaBukkit();
 		
 		chroma.factory().register(Logger.class, Bukkit.getLogger());
-		chroma.factory().register(EmptySection.class, new EmptySectionImpl());
-		
 		chroma.factory().register(Walker.class, WalkerImpl.class);
 		chroma.factory().register(Formatter.class, FormatterBukkit.class);
 	}

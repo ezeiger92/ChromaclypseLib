@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.chromaclypse.api.Defaults;
 import com.chromaclypse.api.config.ConfigAction;
 import com.chromaclypse.api.config.ConfigObject;
-import com.chromaclypse.api.config.EmptySection;
 import com.chromaclypse.api.config.Walker;
 import com.chromaclypse.api.config.visitor.ConfigVisitor;
 
@@ -48,7 +48,7 @@ public class WalkerImpl implements Walker {
 	
 	@SuppressWarnings("unchecked")
 	private static List<Object> unmapListHelper(Object data, Field f) throws InstantiationException, IllegalAccessException {
-		List<Object> result = Defaults.EmptyList();
+		List<Object> result = Defaults.emptyList();
 		
 		if(data == null)
 			return result;
@@ -73,7 +73,7 @@ public class WalkerImpl implements Walker {
 	
 	@SuppressWarnings("unchecked")
 	private static Map<Object, Object> unmapMapHelper(Object data, Field f) throws InstantiationException, IllegalAccessException {
-		Map<Object, Object> result = Defaults.EmptyMap();
+		Map<Object, Object> result = Defaults.emptyMap();
 
 		if(data == null)
 			return result;
@@ -109,7 +109,7 @@ public class WalkerImpl implements Walker {
 		}
 		
 		if(in == null)
-			return Defaults.EmptyMap();
+			return Defaults.emptyMap();
 		
 		return (Map<String,Object>)in;
 	}
@@ -140,14 +140,14 @@ public class WalkerImpl implements Walker {
 	@SuppressWarnings("unchecked")
 	private static Object mapFields(Object object) {
 		if(object instanceof List) {
-			List<Object> result = Defaults.EmptyList();
+			List<Object> result = Defaults.emptyList();
 			for(Object entry : (List<Object>) object)
 				result.add( mapFields(entry) );
 			
 			return result;
 		}
 		else if(object instanceof Map) {
-			Map<Object, Object> result = Defaults.EmptyMap();
+			Map<Object, Object> result = Defaults.emptyMap();
 			for(Map.Entry<Object, Object> entry : ((Map<Object, Object>) object).entrySet())
 				result.put( mapFields(entry.getKey()), mapFields(entry.getValue()) );
 			
@@ -156,7 +156,7 @@ public class WalkerImpl implements Walker {
 		else if(parentConfigClass(object.getClass()) == null)
 			return object;
 		
-		Map<Object, Object> result = Defaults.EmptyMap();
+		Map<Object, Object> result = Defaults.emptyMap();
 		
 		for(Field f : object.getClass().getFields())
 			try {
@@ -173,7 +173,7 @@ public class WalkerImpl implements Walker {
 		
 		public Holder(Map<String, Object> map, ConfigurationSection file, int depth) {
 			this.map = map;
-			this.file = (file != null) ? file : EmptySection.get();
+			this.file = (file != null) ? file : new YamlConfiguration();
 			this.depth = depth;
 		}
 	}
@@ -189,7 +189,7 @@ public class WalkerImpl implements Walker {
 	@SuppressWarnings("unchecked")
 	public void walk(ConfigurationSection configFile, Object configInst, ConfigVisitor visitor) {
 		Map<String, Object> dataInst = (Map<String,Object>)mapFields(configInst);
-		List<Holder> toParse = Defaults.List(new Holder(dataInst, configFile, 0));
+		List<Holder> toParse = Defaults.list(new Holder(dataInst, configFile, 0));
 		boolean update = false;
 		
 		for(int i = 0; i < toParse.size(); ++i) {
