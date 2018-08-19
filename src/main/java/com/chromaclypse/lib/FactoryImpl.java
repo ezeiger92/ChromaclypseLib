@@ -13,7 +13,7 @@ public final class FactoryImpl implements Factory {
 	public <T> T construct(Class<T> clazz) {
 		try {
 			@SuppressWarnings("unchecked")
-			T inst = (T) classMap.get(clazz).newInstance();
+			T inst = (T) classMap.get(clazz).getDeclaredConstructor().newInstance();
 			return inst;
 		} catch (Exception e) {
 			return null;
