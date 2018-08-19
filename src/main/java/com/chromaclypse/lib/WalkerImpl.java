@@ -1,6 +1,7 @@
 package com.chromaclypse.lib;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -28,7 +29,7 @@ public class WalkerImpl implements Walker {
 	@SuppressWarnings("unchecked")
 	public <T extends ConfigObject> T deserialize(Class<T> clazz, Map<String, Object> serialData) {
 		try {
-			return (T) unmapFields(clazz.newInstance(), serialData);
+			return (T) unmapFields(clazz.getDeclaredConstructor().newInstance(), serialData);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -47,7 +48,7 @@ public class WalkerImpl implements Walker {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static List<Object> unmapListHelper(Object data, Field f) throws InstantiationException, IllegalAccessException {
+	private static List<Object> unmapListHelper(Object data, Field f) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		List<Object> result = Defaults.emptyList();
 		
 		if(data == null)
@@ -64,7 +65,7 @@ public class WalkerImpl implements Walker {
 		
 		for(Object leafData : (List<Object>) data) {
 			if(parentConfigElem != null)
-				leafData = unmapFields(elemClass.newInstance(), mapOf(leafData));
+				leafData = unmapFields(elemClass.getDeclaredConstructor().newInstance(), mapOf(leafData));
 			result.add(leafData);
 		}
 		
@@ -72,7 +73,7 @@ public class WalkerImpl implements Walker {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static Map<Object, Object> unmapMapHelper(Object data, Field f) throws InstantiationException, IllegalAccessException {
+	private static Map<Object, Object> unmapMapHelper(Object data, Field f) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Map<Object, Object> result = Defaults.emptyMap();
 
 		if(data == null)
@@ -94,9 +95,9 @@ public class WalkerImpl implements Walker {
 			Object leafDataVal = entry.getValue();
 			
 			if(parentConfigKey != null)
-				leafDataKey = unmapFields(keyClass.newInstance(), mapOf(leafDataKey));
+				leafDataKey = unmapFields(keyClass.getDeclaredConstructor().newInstance(), mapOf(leafDataKey));
 			if(parentConfigVal != null)
-				leafDataVal = unmapFields(valClass.newInstance(), mapOf(leafDataVal));
+				leafDataVal = unmapFields(valClass.getDeclaredConstructor().newInstance(), mapOf(leafDataVal));
 			result.put(leafDataKey, leafDataVal);
 		}
 		return result;
@@ -124,7 +125,7 @@ public class WalkerImpl implements Walker {
 				else if(Map.class.isAssignableFrom(f.getType()))
 					subData = unmapMapHelper(mapOf(subData), f);
 				else if(parentConfigClass(f.getType()) != null)
-					subData = unmapFields(f.getType().newInstance(), mapOf(subData));
+					subData = unmapFields(f.getType().getDeclaredConstructor().newInstance(), mapOf(subData));
 				
 				if(!f.getType().isPrimitive() || subData != null)
 					f.set(object, subData);
