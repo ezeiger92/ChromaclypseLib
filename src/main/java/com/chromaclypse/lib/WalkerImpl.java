@@ -26,7 +26,6 @@ public class WalkerImpl implements Walker {
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T extends ConfigObject> T deserialize(Class<T> clazz, Map<String, Object> serialData) {
 		try {
 			return (T) unmapFields(clazz.getDeclaredConstructor().newInstance(), serialData);
@@ -47,7 +46,6 @@ public class WalkerImpl implements Walker {
 		return type;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static List<Object> unmapListHelper(Object data, Field f) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		List<Object> result = Defaults.emptyList();
 		
@@ -63,7 +61,7 @@ public class WalkerImpl implements Walker {
 		Class<?> elemClass = (Class<?>) args[0];
 		Class<?> parentConfigElem = parentConfigClass(elemClass);
 		
-		for(Object leafData : (List<Object>) data) {
+		for(Object leafData : (List<?>) data) {
 			if(parentConfigElem != null)
 				leafData = unmapFields(elemClass.getDeclaredConstructor().newInstance(), mapOf(leafData));
 			result.add(leafData);
@@ -72,7 +70,6 @@ public class WalkerImpl implements Walker {
 		return result;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static Map<Object, Object> unmapMapHelper(Object data, Field f) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Map<Object, Object> result = Defaults.emptyMap();
 
@@ -90,7 +87,7 @@ public class WalkerImpl implements Walker {
 		Class<?> parentConfigKey = parentConfigClass(keyClass);
 		Class<?> parentConfigVal = parentConfigClass(valClass);
 		
-		for(Map.Entry<Object, Object> entry : ((Map<Object, Object>) data).entrySet()) {
+		for(Map.Entry<?, ?> entry : ((Map<?, ?>) data).entrySet()) {
 			Object leafDataKey = entry.getKey();
 			Object leafDataVal = entry.getValue();
 			
@@ -115,7 +112,7 @@ public class WalkerImpl implements Walker {
 		return (Map<String,Object>)in;
 	}
 	
-	private static Object unmapFields(Object object, Map<?, ?> serialData) {
+	private static <T> T unmapFields(T object, Map<?, ?> serialData) {
 		try {
 			for(Field f : object.getClass().getFields()) {
 				Object subData = serialData.get(f.getName());
@@ -138,18 +135,17 @@ public class WalkerImpl implements Walker {
 		return object;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static Object mapFields(Object object) {
 		if(object instanceof List) {
 			List<Object> result = Defaults.emptyList();
-			for(Object entry : (List<Object>) object)
+			for(Object entry : (List<?>) object)
 				result.add( mapFields(entry) );
 			
 			return result;
 		}
 		else if(object instanceof Map) {
 			Map<Object, Object> result = Defaults.emptyMap();
-			for(Map.Entry<Object, Object> entry : ((Map<Object, Object>) object).entrySet())
+			for(Map.Entry<?, ?> entry : ((Map<?, ?>) object).entrySet())
 				result.put( mapFields(entry.getKey()), mapFields(entry.getValue()) );
 			
 			return result;

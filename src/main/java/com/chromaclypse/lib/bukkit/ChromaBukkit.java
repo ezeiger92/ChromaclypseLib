@@ -8,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 import com.chromaclypse.api.Chroma;
 import com.chromaclypse.lib.FactoryImpl;
 
+@SuppressWarnings("deprecation")
 public class ChromaBukkit extends Chroma.Impl {
 	private FactoryImpl factory = new FactoryImpl();
 	private Plugin handle;
