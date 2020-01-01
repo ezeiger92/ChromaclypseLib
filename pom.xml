@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.chromaclypse.lib</groupId>
 	<artifactId>ChromaclypseLib</artifactId>
-	<version>1.3.3</version>
+	<version>1.3.4</version>
 	<build>
 		<plugins>
 			<plugin>
